@@ -1,13 +1,807 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<!-- Add CSS at the head of HTML file -->
-    <link rel="stylesheet" href="./css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighbor Joining Algorithm</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        #logo {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            width: 200px;  /* Adjust size */
+            height: auto;
+        }
+
+        #title{
+            font-size: 45px;
+        }
+
+        #header{
+            display: flex;
+            align-items: center;
+            gap: 100px; /* Adjust spacing */
+        }
+        
+        .body {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px;
+            background: linear-gradient(to right, #eaedf3, #e2eaf3);
+            color: #ffffff;
+        }
+        .container {
+            max-width: 100%;
+            text-align: center;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+        /* Existing styles */
+        #howToUseContent {
+            display: none;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #333;
+            font-size: 20px;
+            text-align: left;
+            max-width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: bold; /* Make all text inside bold */
+        }
+        ol {
+            text-align: left;
+            display: inline-block;
+        }
+        .center-text {
+            text-align: center;
+        }
+        
+
+        textarea {
+            width: 100%;
+            margin: auto;
+            padding: 12px;
+            font-size: 16px;
+            height: 130px;
+            border: 2px solid #243b55;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .step-btn {
+            padding: 10px;
+            width:300px;
+            height: 50px;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #243b55;
+            color: rgb(248, 247, 247);
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #060e276b;
+            color: #f5f5f5;
+        }
+        button {
+            align-self: flex-start; /* Ensures button alignment */
+        }
+        
+        input[type="file"] {
+            margin: 12px 0;
+        }
+
+
+        .custom-file-input {
+            display: none; /* Hide the default file input */
+        }
+        .custom-file-input {
+            display: none; /* Hide default file input */
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Adjust spacing between elements */
+        }
+
+        .choose-file-container {
+            min-width: 150px; /* Set the width of the Choose File button */
+        }
+
+        .input-sequence-box {
+            width: 100%; /* Makes it responsive */
+            max-width: 850px; /* Matches the table width */
+            height: 150px; /* Keeps the required height */
+            resize: none; /* Disable resizing */
+            box-sizing: border-box; /* Includes padding & border in width 
+        }
+        .distance-matrix-table {
+            width: 100%;
+            max-width: 850px; /* Ensure the table width is fixed */
+            box-sizing: border-box;
+        }
+
+
+        .file-label {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #ff5e5e; /* Default input file button color */
+            color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 5px;
+            transition: background 0.3s ease;
+            text-align: center;
+        }
+        .file-container {
+            display: flex;
+            flex-direction: row; /* Stack elements vertically */
+            align-items: center; /* Align content to the left */
+            gap: 15px; /* Add spacing */
+        }
+        .input-buttons {
+            display: flex;
+            flex-direction: column; 
+            align-items: flex-start; /* Align content to the left */
+            gap: 10px; /* Add spacing */
+
+
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background-color: #ff5e5e; /* Same color as Reset button */
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background-color: #d04949; /* Darker shade for hover effect */
+        }
+
+       
+        .file-label {
+            align-self: flex-start; /* Move it to the left edge */
+            margin-left: 0px; /* Adjust this value for precise positioning */
+        }
+
+
+        .file-label:hover {
+            background-color: #d04949;
+        }
+        .distance-matrix-table, 
+        .computation-steps-box {
+            width: 100%;
+            max-width: 850px; /* Adjust this value based on the table width */
+            border: 2px solid #243b55;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .distance-matrix-table, 
+        .computation-steps-box {
+            width: 100%;
+            max-width: 850px; /* Adjust this value based on the table width */
+            border: 2px solid #243b55;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .computation-steps-box {
+            height: auto;
+            min-height: 130px; /* Adjust for content */
+            overflow-y: auto; /* Ensures scroll if content overflows */
+            padding: 10px;
+            background-color: #f8f9fa; /* Match the matrix background */
+        }
+        
+        table {
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #243b55;
+            padding: 10px;
+            text-align: center;
+            width: 100px; /* Adjust as needed */
+            min-width: 100px;
+            max-width: 150px;
+            word-wrap: break-word;
+                }
+        th {
+            background-color: #edf1f5;
+            color: #090909;
+        }
+        svg {
+            width: 100%;
+            height: 500px;
+            border: 3px solid #243b55;
+            background-color: #ffffff;
+            border-radius: 8px;
+        }
+        .info-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 14px;
+            text-align: left;
+            width: 98%; 
+            max-height: 200px; /* Set a fixed height *
+            overflow-y: auto; /* Enable scrolling */
+            overflow-x: auto;
+            border: 1px solid #243b55;
+        }
+
+        /* Modal Background */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000; /* Ensure it's above all content */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 300px;
+        }
+
+        /* Export Options */
+        .export-option {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            color: black;
+            background: #f1f1f1;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .export-option:hover {
+            background: #ddd;
+        }
+
+        /* Close Button */
+        #closeModal {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+
+
+    
+    </style>
 </head>
 <body>
-		<!-- Your code goes here-->
+    <div id="header">
+        <img src="https://webfiles.amrita.edu/2024/07/logo-branding-amrita-universiy-2024.svg" alt="Amrita University Logo" id="logo">
+    </div>
 
-	<!-- Add JS at the bottom of HTML file --> 
-        <script src="./js/main.js"></script>
+    <div class="container">
+        <h1 id="title" class="center-text">Neighbor Joining Algorithm</h1>
+        
+        <div class="center-text">
+            <button class="step-btn" onclick="toggleHowToUse()">How to Use This Tool </button>
+        </div>
+        <div id="howToUseContent" class="center-text">
+            
+            <ol>
+                <li>Enter at least two FASTA sequences in the input box or upload a FASTA file.</li>
+                <li>Click on "Process FASTA" to generate the distance matrix.</li>
+                <li>Click "Show Computation Steps" to see step-by-step calculations.</li>
+                <li>Click "Run Neighbor Joining" to generate the phylogenetic tree.</li>
+                <li>Analyze the graphical tree representation.</li>
+            </ol>
+        </div>
+        <br>
+        <br>
+
+        <div class="input-section">
+            <label for="sequence-input"></label>
+            <textarea id="sequence-input" placeholder="Enter atleast two fasta sequences..."></textarea>
+        </div>
+        <br>
+    
+    <div class="contents">
+        <div class="file-container">
+            <label for="fileInput" class="file-label">Choose File</label>
+            <input type="file" id="fileInput" style="display: none;">
+            <span id="fileName">No file chosen</span>
+            <input type="button" value="Reset" id="resetButton" class="file-label">
+            <a href="sample.fasta" class="download-link" download>Download Sample FASTA</a>
+        </div>
+        
+        
+        
+        <button class="step-btn" onclick="processFastaInput()">Process FASTA</button>
+        
+        
+        <div id="matrixOutput"></div>
+        <br>
+        <br>
+        <button class="step-btn" onclick="showComputationSteps()">Show Computation Steps</button>
+        <br>
+        <br>
+        <div id="computationSteps" class="info-box" style="display:none;"></div> 
+        <div id="computationSteps" style="width: 100%; overflow-x: auto;">
+        </div>
+        <br>
+        
+        <button class="step-btn" onclick="runNeighborJoining()">Run Neighbor Joining</button>
+        <br>
+        <br>
+
+        <svg id="tree"></svg>
+        <input type="button" value="Reset" id="resetButton" class="file-label">
+
+        <!-- Existing Export Button -->
+        <button id="exportButton" class="file-label">Export Results</button>
+
+        <!-- Export Modal (Hidden Initially) -->
+        <div id="exportModal" class="modal">
+            <div class="modal-content">
+                <h3>Export Results</h3>
+                <button id="downloadTree" class="export-option">📂 Download Phylogenetic Tree</button>
+                <button id="downloadMatrix" class="export-option">📊 Download Matrix Table</button>
+                <button id="downloadAll" class="export-option">📁 Download All Results</button>
+                <button id="closeModal">❌ Close</button>
+            </div>
+        </div>
+
+
+    
+    </div>
+    </div>
+
+    <script>
+        // Get elements
+        let exportButton = document.getElementById("exportButton");
+        let exportModal = document.getElementById("exportModal");
+        let closeModal = document.getElementById("closeModal");
+        let downloadTree = document.getElementById("downloadTree");
+        let downloadMatrix = document.getElementById("downloadMatrix");
+        let downloadAll = document.getElementById("downloadAll");
+
+        // Show modal when clicking the export button
+        exportButton.addEventListener("click", function () {
+            exportModal.style.display = "flex";
+        });
+
+        // Close modal when clicking close button
+        closeModal.addEventListener("click", function () {
+            exportModal.style.display = "none";
+        });
+
+        // Close modal when clicking outside modal content
+        window.addEventListener("click", function (event) {
+            if (event.target === exportModal) {
+                exportModal.style.display = "none";
+            }
+        });
+
+        // Function to trigger file download dynamically
+        function downloadFile(filename, contentType) {
+            let link = document.createElement("a");
+            link.href = filename;
+            link.download = filename.split("/").pop(); // Extract filename from path
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Set download actions only when clicking the buttons
+        downloadTree.addEventListener("click", function () {
+            downloadFile("tree.svg", "image/svg+xml");
+        });
+
+        downloadMatrix.addEventListener("click", function () {
+            downloadFile("matrix.csv", "text/csv");
+        });
+
+        downloadAll.addEventListener("click", function () {
+            downloadFile("results.zip", "application/zip");
+        });
+
+
+
+
+        function toggleHowToUse() {
+            var content = document.getElementById("howToUseContent");
+
+            // Use getComputedStyle to check actual visibility
+            if (window.getComputedStyle(content).display === "none") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+        document.getElementById("fileInput").addEventListener("change", function () {
+            let fileName = this.files.length > 0 ? this.files[0].name : "No file chosen";
+            document.getElementById("fileName").textContent = fileName;
+        });
+
+        document.getElementById("resetButton").addEventListener("click", function () {
+            document.getElementById("fileInput").value = ""; // Clears file input
+            document.getElementById("fileName").textContent = "No file chosen"; // Resets text
+        });
+
+
+
+        document.getElementById("resetButton").addEventListener("click", resetInput);
+        
+
+
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("sequence-input").value = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+        });
+        function resetInput() {
+            document.getElementById("sequence-input").value = "";
+            document.getElementById("fileInput").value = "";
+            document.getElementById("matrixOutput").innerHTML = "";
+            d3.select("#tree").selectAll("*").remove();
+            document.getElementById("tree").innerHTML = "";
+
+            document.getElementById("computationSteps").innerHTML = "";
+            document.getElementById("computationSteps").style.display = "none";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            function resetAll() {
+                // Clear text area
+                document.getElementById("sequence-input").value = "";
+
+                // Clear file input
+                document.getElementById("fileInput").value = "";
+
+                // Reset computation steps and matrix output
+                document.getElementById("matrixOutput").innerHTML = "";
+                document.getElementById("computationSteps").innerHTML = "";
+                document.getElementById("computationSteps").style.display = "none";
+
+                // Clear graphical tree (if using SVG)
+                document.getElementById("tree").innerHTML = "";
+
+                // Hide 'How to Use' content
+                document.getElementById("howToUseContent").style.display = "none";
+            }
+
+            // Attach event listener to both reset buttons
+            document.querySelectorAll("#resetButton").forEach(button => {
+                button.addEventListener("click", resetAll);
+            });
+        });
+
+
+        
+
+
+        function downloadFasta() {
+            const fastaContent = `>AAA40590.1 insulin [Octodon degus]\nMAPWMHLLTVLALLALWGPNSVQAYSSQHLCGSNLVEALYMTCGRSGFYRPHDRRELEDLQVEQAELGLEAGGLQPSALEMILQKRGIVDQCCNNICTFNQLQNYCNVP\n>KAB1251309.1 Insulin [Camelus dromedarius]\nMALWTRLLALLALLALGAPTPARAFANQHLCGSHLVEALYLVCGERGFFYTPKARREVEDTQVGGVELGGGPGAGGLQPLGPEGRPQKRGIVEQCCASVCSLYQLENYCN\n>AAB60625.1 insulin [Ovis aries]\nMALWTRLVPLLALLALWAPAPAHAFVNQHLCGSHLVEALYLVCGERGFFYTPKARREVEGPQVGALELAGGPGAGGLEGPPQKRGIVEQCCAGVCSLYQLENYCN`;
+            const blob = new Blob([fastaContent], { type: 'text/plain' }); 
+            const element = document.createElement('a'); 
+            element.href = URL.createObjectURL(blob);
+            element.download = "sample.fasta"; 
+            document.body.appendChild(element); 
+            element.click(); 
+            document.body.removeChild(element); 
+            setTimeout(() => URL.revokeObjectURL(element.href), 100);
+        }
+        function parseFasta(input) {
+            const sequences = {};
+            const lines = input.trim().split(/\r?\n/);
+            let currentHeader = "";
+
+            lines.forEach(line => {
+                if (line.startsWith(">")) {
+                    currentHeader = line.substring(1).trim();
+                    sequences[currentHeader] = "";
+                } else {
+                    sequences[currentHeader] += line.trim();
+                }
+            });
+            return sequences;
+        }
+        function showComputationSteps() {
+            const fastaInput = document.getElementById("sequence-input").value;
+            if (!fastaInput.trim()) {
+                alert("Error: No FASTA sequence provided.");
+                return;
+            }
+            const sequences = parseFasta(fastaInput);
+            if (Object.keys(sequences).length === 0) {
+                alert("Error: Invalid FASTA format or empty input.");
+                return;
+            }
+            const steps = computeDistanceMatrixSteps(sequences);
+            document.getElementById("computationSteps").innerHTML = steps;
+            document.getElementById("computationSteps").style.display = "block";
+        }
+        function scrollToBottom() {
+            const computationStepsDiv = document.getElementById("computationSteps");
+            computationStepsDiv.scrollTop = computationStepsDiv.scrollHeight;
+        }
+
+
+
+    const runTreeButton = document.getElementById("runTree");
+    if (runTreeButton) {
+        runTreeButton.addEventListener("click", function () {
+            drawUnrootedTree();
+        });
+    }
+    function computeDistanceMatrix(sequences) {
+            const keys = Object.keys(sequences);
+            const matrix = {};
+            keys.forEach(k1 => {
+                matrix[k1] = {};
+                keys.forEach(k2 => {
+                    if (k1 === k2) {
+                        matrix[k1][k2] = 0;
+                    } else {
+                        let distance = 0;
+                        for (let i = 0; i < Math.min(sequences[k1].length, sequences[k2].length); i++) {
+                            if (sequences[k1][i] !== sequences[k2][i]) distance++;
+                        }
+                        matrix[k1][k2] = distance;
+                    }
+                });
+            });
+            return matrix;
+        }
+
+    // Fix 2: Define the missing function to prevent ReferenceError
+    function computeDistanceMatrixSteps(sequences) {
+            let output = "<strong>Step-by-step distance calculation:</strong><br><br>";
+            const keys = Object.keys(sequences);
+            keys.forEach(k1 => {
+                keys.forEach(k2 => {
+                    if (k1 !== k2) {
+                        let distance = 0;
+                        let details = "";
+                        for (let i = 0; i < Math.min(sequences[k1].length, sequences[k2].length); i++) {
+                            if (sequences[k1][i] !== sequences[k2][i]) {
+                                distance++;
+                                details += `Position ${i + 1}: ${sequences[k1][i]} ≠ ${sequences[k2][i]}<br>`;
+                            }
+                        }
+                        output += `<strong>Distance between ${k1} and ${k2}: ${distance}</strong><br>${details}<br>`;
+                    }
+                });
+                output += "<hr>";
+            });
+            return output;
+        }
+        function processFastaInput() {
+            const fastaInput = document.getElementById("sequence-input").value;
+            if (!fastaInput.trim()) {
+                alert("Please paste or upload your FASTA data.");
+                return;
+            }
+            try {
+                const sequences = parseFasta(fastaInput);
+                const distanceMatrix = computeDistanceMatrix(sequences);
+                displayMatrix(distanceMatrix);
+            } catch (error) {
+                document.getElementById("matrixOutput").textContent = "Error: " + error.message;
+            }
+        }
+
+        function displayMatrix(matrix) {
+            let table = "<table><tr><th></th>";
+            const keys = Object.keys(matrix);
+            keys.forEach(k => table += `<th>${k}</th>`);
+            table += "</tr>";
+            
+            keys.forEach(rowKey => {
+                table += `<tr><th>${rowKey}</th>`;
+                keys.forEach(colKey => {
+                    table += `<td>${matrix[rowKey][colKey]}</td>`;
+                });
+                table += "</tr>";
+            });
+            table += "</table>";
+            document.getElementById("matrixOutput").innerHTML = table;
+        }
+
+        function runNeighborJoining() {
+            const fastaInput = document.getElementById("sequence-input").value;
+            if (!fastaInput.trim()) {
+                alert("Error: No FASTA sequence provided.");
+                return;
+            }
+            const sequences = parseFasta(fastaInput);
+            const distanceMatrix = computeDistanceMatrix(sequences);
+            displayMatrix(distanceMatrix);
+            const treeData = neighborJoining(distanceMatrix);
+            drawUnrootedTree(treeData);
+            
+        }
+
+        document.getElementById("runTree").addEventListener("click", function() {
+            drawUnrootedTree();
+        });
+
+        function neighborJoining(distanceMatrix) {
+            let nodes = Object.keys(distanceMatrix).map(name => ({ id: name, name }));
+
+            while (nodes.length > 2) {
+                // Find the pair with the smallest distance
+                let minDist = Infinity, minI, minJ;
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        if (distanceMatrix[nodes[i].id][nodes[j].id] < minDist) {
+                            minDist = distanceMatrix[nodes[i].id][nodes[j].id];
+                            minI = i;
+                            minJ = j;
+                        }
+                    }
+                }
+
+                // Merge the two closest nodes into a new node
+                const newNode = {
+                    id: `Node_${nodes[minI].id}_${nodes[minJ].id}`,
+                    name: "",
+                    children: [nodes[minI], nodes[minJ]]
+                };
+
+                // Update the distance matrix for the new node
+                let newDistances = {};
+                nodes.forEach(n => {
+                    if (n !== nodes[minI] && n !== nodes[minJ]) {
+                        newDistances[n.id] = (distanceMatrix[nodes[minI].id][n.id] +
+                            distanceMatrix[nodes[minJ].id][n.id]) / 2;
+                    }
+                });
+
+                // Remove merged nodes and add new node
+                nodes = nodes.filter((_, index) => index !== minI && index !== minJ);
+                nodes.push(newNode);
+
+                // Update distance matrix
+                distanceMatrix[newNode.id] = newDistances;
+                nodes.forEach(n => {
+                    if (n.id !== newNode.id) {
+                        distanceMatrix[n.id][newNode.id] = newDistances[n.id];
+                    }
+                });
+            }
+
+            // Final root node with two remaining nodes
+            return { name: "", children: nodes };
+        }
+
+
+        function drawUnrootedTree(treeData) {
+            d3.select("#tree").selectAll("*").remove();
+            const width = 600, height = 600;
+
+            const svg = d3.select("#tree")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+            // Convert NJ tree data to a force-directed graph
+            const nodes = [];
+            const links = [];
+
+            function traverse(node, parent = null) {
+                nodes.push(node);
+                if (parent) {
+                    links.push({ source: parent, target: node });
+                }
+                if (node.children) {
+                    node.children.forEach(child => traverse(child, node));
+                }
+            }
+            traverse(treeData);
+
+            // Force simulation for a natural unrooted tree layout
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).distance(80).strength(1).id(d => d.id))
+                .force("charge", d3.forceManyBody().strength(-200))
+                .force("center", d3.forceCenter(0, 0))
+                .on("tick", ticked);
+
+            // Draw edges (links)
+            const link = svg.selectAll(".link")
+                .data(links)
+                .enter().append("line")
+                .attr("stroke", "#000");
+
+            // Draw nodes (circles)
+            const node = svg.selectAll(".node")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("r", 6)
+                .attr("fill", "#243b55")
+                .call(drag(simulation));
+
+            // Add labels
+            const text = svg.selectAll(".label")
+                .data(nodes)
+                .enter().append("text")
+                .attr("font-size", "14px")
+                .attr("dx", 8)
+                .attr("dy", 4)
+                .text(d => d.name);
+
+            function ticked() {
+                link.attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node.attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                text.attr("x", d => d.x + 8)
+                    .attr("y", d => d.y);
+            }
+
+            function drag(simulation) {
+                return d3.drag()
+                    .on("start", (event, d) => {
+                        if (!event.active) simulation.alphaTarget(0.3).restart();
+                        d.fx = d.x;
+                        d.fy = d.y;
+                    })
+                    .on("drag", (event, d) => {
+                        d.fx = event.x;
+                        d.fy = event.y;
+                    })
+                    .on("end", (event, d) => {
+                        if (!event.active) simulation.alphaTarget(0);
+                        d.fx = null;
+                        d.fy = null;
+                    });
+            }
+        }
+        
+    </script>
 </body>
 </html>
