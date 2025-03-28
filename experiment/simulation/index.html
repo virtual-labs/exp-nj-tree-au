@@ -41,7 +41,7 @@
         }
         /* Existing styles */
         #howToUseContent {
-            display: none;
+            display: block;
             background: #f5f5f5;
             padding: 20px;
             border-radius: 8px;
@@ -54,6 +54,12 @@
             margin-left: auto;
             margin-right: auto;
             font-weight: bold; /* Make all text inside bold */
+           
+        }
+        #howToUseContent h2 {
+            text-align: left; /* Align heading with steps */
+            margin-bottom: 15px;
+            padding-left: 10px; /* Adjust spacing to match list */
         }
         ol {
             text-align: left;
@@ -62,6 +68,7 @@
         .center-text {
             text-align: center;
         }
+
         
 
         textarea {
@@ -87,12 +94,22 @@
             border-radius: 8px;
             transition: background 0.3s ease;
         }
-        button:hover {
+        .step-btn:hover {
             background-color: #060e276b;
             color: #f5f5f5;
         }
-        button {
-            align-self: flex-start; /* Ensures button alignment */
+        .instruction-btn {
+            padding: 10px;
+            width:100%;
+            height: 50px;
+            font-size: 26px;
+            text-align: left;
+            cursor: pointer;
+            background-color: #243b55;
+            color: rgb(248, 247, 247);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Times New Roman', Times, serif;
         }
         
         input[type="file"] {
@@ -260,7 +277,6 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000; /* Ensure it's above all content */
@@ -274,34 +290,52 @@
             text-align: center;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
             min-width: 300px;
+            display: flex;
+            flex-direction: column; /* Align items in column */
+            align-items: center; /* Center align content */
         }
 
         /* Export Options */
         .export-option {
             display: block;
-            padding: 10px;
+            width: 90%;
+            padding: 12px;
             margin: 10px 0;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: bold;
             color: black;
             background: #f1f1f1;
             border-radius: 5px;
             cursor: pointer;
             border: none;
+            transition: background 0.3s ease, color 0.3s ease; /* Smooth effect */
         }
 
         .export-option:hover {
-            background: #ddd;
+            background: #333; /* Dark background */
+            color: white; /* Make text more visible */
         }
 
         /* Close Button */
         #closeModal {
-            margin-top: 10px;
-            padding: 8px 15px;
+            margin-top: 15px;
+            padding: 10px 20px;
             background: red;
             color: white;
+            font-weight: bold;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            transition: background 0.3s ease;
+            display: block;
+            text-align: center;
+            width: auto; /* Ensures button is centered */
+            margin-left: auto; 
+            margin-right: auto; /* These will center it */
+        }
+        /* Close Button Hover */
+        #closeModal:hover {
+            background: darkred;
         }
 
 
@@ -318,10 +352,12 @@
         <h1 id="title" class="center-text">Neighbor Joining Algorithm</h1>
         
         <div class="center-text">
-            <button class="step-btn" onclick="toggleHowToUse()">How to Use This Tool </button>
+            <button class="instruction-btn" id="instructionButton" onclick="toggleHowToUse()">
+                Instructions ▲
+            </button>
         </div>
-        <div id="howToUseContent" class="center-text">
-            
+        <div id="howToUseContent" class="center-text" >
+            <h2><strong>How to Use This Tool</strong></h2> <!-- Added Heading -->  
             <ol>
                 <li>Enter at least two FASTA sequences in the input box or upload a FASTA file.</li>
                 <li>Click on "Process FASTA" to generate the distance matrix.</li>
@@ -363,6 +399,9 @@
         <div id="computationSteps" style="width: 100%; overflow-x: auto;">
         </div>
         <br>
+        <div id="neighborJoiningResults" style="display: none;">
+            <!-- Results will be shown here -->
+        </div>
         
         <button class="step-btn" onclick="runNeighborJoining()">Run Neighbor Joining</button>
         <br>
@@ -419,39 +458,41 @@
         // Function to trigger file download dynamically
         function downloadFile(filename, contentType) {
             let link = document.createElement("a");
-            link.href = filename;
+            link.href = `/static/downloads/${filename}`;
             link.download = filename.split("/").pop(); // Extract filename from path
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // Set download actions only when clicking the buttons
-        downloadTree.addEventListener("click", function () {
+        // Attach event listeners for downloading
+        document.getElementById("downloadTree").addEventListener("click", function () {
             downloadFile("tree.svg", "image/svg+xml");
         });
 
-        downloadMatrix.addEventListener("click", function () {
+        document.getElementById("downloadMatrix").addEventListener("click", function () {
             downloadFile("matrix.csv", "text/csv");
         });
 
-        downloadAll.addEventListener("click", function () {
+        document.getElementById("downloadAll").addEventListener("click", function () {
             downloadFile("results.zip", "application/zip");
         });
 
 
-
-
         function toggleHowToUse() {
             var content = document.getElementById("howToUseContent");
+            var button = document.getElementById("instructionButton");
 
-            // Use getComputedStyle to check actual visibility
-            if (window.getComputedStyle(content).display === "none") {
-                content.style.display = "block";
+            // Toggle between show and hide
+            if (content.style.display === "none") {
+                content.style.display = "block";  // Hide content
+                button.innerHTML = "Instructions ▲"; // Change to down arrow
             } else {
-                content.style.display = "none";
+                content.style.display = "none";  // Show content
+                button.innerHTML = "Instructions ▼"; // Change to up arrow
             }
         }
+
         document.getElementById("fileInput").addEventListener("change", function () {
             let fileName = this.files.length > 0 ? this.files[0].name : "No file chosen";
             document.getElementById("fileName").textContent = fileName;
@@ -505,8 +546,8 @@
                 // Clear graphical tree (if using SVG)
                 document.getElementById("tree").innerHTML = "";
 
-                // Hide 'How to Use' content
-                document.getElementById("howToUseContent").style.display = "none";
+                // ✅ Ensure 'How to Use' content remains visible
+                document.getElementById("howToUseContent").style.display = "block"; // ⬅️ This ensures it remains visible
             }
 
             // Attach event listener to both reset buttons
@@ -625,6 +666,9 @@
                 const sequences = parseFasta(fastaInput);
                 const distanceMatrix = computeDistanceMatrix(sequences);
                 displayMatrix(distanceMatrix);
+                // Automatically scroll down to the results
+                document.getElementById("matrixOutput").scrollIntoView({ behavior: "smooth" });
+
             } catch (error) {
                 document.getElementById("matrixOutput").textContent = "Error: " + error.message;
             }
@@ -657,8 +701,13 @@
             const distanceMatrix = computeDistanceMatrix(sequences);
             displayMatrix(distanceMatrix);
             const treeData = neighborJoining(distanceMatrix);
-            drawUnrootedTree(treeData);
-            
+            drawUnrootedTree(treeData);  
+             // Automatically scroll to the results section
+            const resultsDiv = document.getElementById("neighborJoiningResults"); // Ensure this ID exists in your HTML
+            if (resultsDiv) {
+                resultsDiv.style.display = "block"; // Make sure it's visible
+                resultsDiv.scrollIntoView({ behavior: "smooth" }); // Scroll to it smoothly
+            }      
         }
 
         document.getElementById("runTree").addEventListener("click", function() {
