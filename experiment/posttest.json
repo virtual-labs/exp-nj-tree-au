@@ -2,38 +2,72 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "1. Which value is considered while calculating M(i,j)",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Highest",
+        "b": "Lowest",
+        "c": "Equals",
+        "d": "All the above"
       },
-      "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+      
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+
+    {
+      "question": "2. When you have 2 values under consideration for M(i,j) which one do you consider?",
+      "answers": {
+        "a": "The first one",
+        "b": "The second one",
+        "c": "Random selection",
+        "d": "None are selected"
       },
+      
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+
+
+
+
+    {
+      "question": "3. At what condition is does the node creation process stop",
+      "answers": {
+        "a": "N-2=0",
+        "b": "N-1=0",
+        "c": "N=0",
+        "d": "None of the above"
+      },
+      
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
+
+
     {
-      "question": "This is a Sample Question 2?",
+      "question": "4. Point out one of the limitations on Neighbor joining",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Fast",
+        "b": "Efficient",
+        "c": "Works on large data",
+        "d": "Sensitive to errors"
       },
-      "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+      
+      "correctAnswer": "d",
+      "difficulty": "beginner"
+    },   
+    
+    {
+      "question": "5. Neighbor joining follows a bottom-up clustering method. True /False",
+      "answers": {
+        "a": "True",
+        "b": "False"
       },
-      "correctAnswer": "c",
+      
+      "correctAnswer": "a",
       "difficulty": "beginner"
     }
   ]
 }
+
+
