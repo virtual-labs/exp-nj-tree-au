@@ -2,37 +2,67 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "1. Among this which is not a distance-based method",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Neighbor Joining",
+        "b": "UPGMA",
+        "c": "Bayesian Framework"
       },
-      "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+      
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    
+
+    {
+      "question": "2. Neighbor joining algorithm assumes a star topology at the beginning. True/False?",
+      "answers": {
+        "a": "True",
+        "b": "False"
       },
+      
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
+
+       
     {
-      "question": "This is a Sample Question 2?",
+      "question": "3. When and by whom was neighbor joining introduced",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "1987, Saitou and Nei",
+        "b": "1986, Needleman and Wunsch",
+        "c": "1987, Needleman and Wunsch",
+        "d": "1986, Saitou and Nei"
       },
-      "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+      
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+
+    {
+      "question": "4. Phylogenetics is the study of",
+      "answers": {
+        "a": "Evolutionary relationships",
+        "b": "Genomes",
+        "c": "Drug design",
+        "d": "Systems modeling"
       },
-      "correctAnswer": "c",
+      
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+
+
+    {
+      "question": "5. Which among the statements is not true",
+      "answers": {
+        "a": "Relies on accurate character estimation.",
+        "b": "Can be sensitive to errors in distance calculations.",
+        "c": "Does not account for site-specific variations in evolution.",
+        "d": "Initially requires a star shaped tree assumption"
+      },
+      
+      "correctAnswer": "a",
       "difficulty": "beginner"
     }
   ]
