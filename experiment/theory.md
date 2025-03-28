@@ -51,3 +51,11 @@ The Neighbor-Joining (NJ) algorithm is a distance-based method used to construct
 The NJ algorithm follows a bottom-up clustering approach, progressively merging closely related sequences (or taxa) based on their pairwise evolutionary distances. Unlike UPGMA (Unweighted Pair Group Method with Arithmetic Mean), which assumes a constant rate of evolution and considers only absolute distances, NJ accounts for variations in evolutionary rates, reducing the risk of errors.
 
 A Neighbor-Joining tree aims to minimize the total branch length, making it a type of minimum evolution method. In addition to phylogenetic tree construction, NJ plays a crucial role in progressive multiple sequence alignment (MSA) methods, such as ClustalW, by guiding the sequence alignment process based on evolutionary relationships.
+
+
+
+<img src="images/1.png" title="" />
+
+Figure 1:Phylogenetic methods used for constructing guide trees. Adapted from: 
+
+http://web.cs.elte.hu/blobs/diplomamunkak/bsc_alkmat/2015/biro_regina_krisztina.pdf
