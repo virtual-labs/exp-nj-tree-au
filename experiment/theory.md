@@ -107,3 +107,4 @@ Figure 2: Example being calculated iteratively. Each color represents a step tow
 2. Can be sensitive to errors in distance calculations.
 
 3. Does not account for site-specific variations in evolution.
+
