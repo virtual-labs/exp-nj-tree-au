@@ -2,9 +2,10 @@
 
 1. Open the simulator. Read the general instructions on how to use this tool before starting the simulation.
    
+   
    <img src="images/p1.png" title="" />
    
-2. Choose a fasta file with multiple sequences or copy multiple sequences into the textbox provided.
+3. Choose a fasta file with multiple sequences or copy multiple sequences into the textbox provided.
    
   <img src="images/p2.png" title="" />
   
