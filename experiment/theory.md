@@ -73,15 +73,25 @@ http://web.cs.elte.hu/blobs/diplomamunkak/bsc_alkmat/2015/biro_regina_krisztina.
 
 <img src="images/3.png" title="" />
 
+&nbsp;
+
 <img src="images/4.png" title="" />
+
+&nbsp;
 
 <img src="images/5.png" title="" />
 
+&nbsp;
+
 <img src="images/6.png" title="" />
+
+&nbsp;
 
 <img src="images/7.png" title="" />
 
 Figure 2: Example being calculated iteratively. Each color represents a step towards generating a phylogenetic tree
+
+&nbsp;
 
 ### Advantages and Limitations
 #### Advantages:
@@ -97,3 +107,4 @@ Figure 2: Example being calculated iteratively. Each color represents a step tow
 2. Can be sensitive to errors in distance calculations.
 
 3. Does not account for site-specific variations in evolution.
+
