@@ -59,3 +59,41 @@ A Neighbor-Joining tree aims to minimize the total branch length, making it a ty
 Figure 1:Phylogenetic methods used for constructing guide trees. Adapted from: 
 
 http://web.cs.elte.hu/blobs/diplomamunkak/bsc_alkmat/2015/biro_regina_krisztina.pdf
+
+
+
+
+&nbsp;
+
+
+<img src="images/2.png" title="" />
+
+
+&nbsp;
+
+<img src="images/3.png" title="" />
+
+<img src="images/4.png" title="" />
+
+<img src="images/5.png" title="" />
+
+<img src="images/6.png" title="" />
+
+<img src="images/7.png" title="" />
+
+Figure 2: Example being calculated iteratively. Each color represents a step towards generating a phylogenetic tree
+
+### Advantages and Limitations
+#### Advantages:
+1. Fast and efficient for large datasets.
+
+2. Does not require an initial tree assumption.
+
+3. Works well with large evolutionary distances.
+
+#### Limitations:
+1. Relies on accurate distance estimation.
+
+2. Can be sensitive to errors in distance calculations.
+
+3. Does not account for site-specific variations in evolution.
