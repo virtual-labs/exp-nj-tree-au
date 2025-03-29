@@ -1,0 +1,69 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "1. Among this which is not a distance-based method",
+      "answers": {
+        "a": "Neighbor Joining",
+        "b": "UPGMA",
+        "c": "Bayesian Framework"
+      },
+      
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    
+
+    {
+      "question": "2. Neighbor joining algorithm assumes a star topology at the beginning. True/False?",
+      "answers": {
+        "a": "True",
+        "b": "False"
+      },
+      
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+
+       
+    {
+      "question": "3. When and by whom was neighbor joining introduced",
+      "answers": {
+        "a": "1987, Saitou and Nei",
+        "b": "1986, Needleman and Wunsch",
+        "c": "1987, Needleman and Wunsch",
+        "d": "1986, Saitou and Nei"
+      },
+      
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+
+    {
+      "question": "4. Phylogenetics is the study of",
+      "answers": {
+        "a": "Evolutionary relationships",
+        "b": "Genomes",
+        "c": "Drug design",
+        "d": "Systems modeling"
+      },
+      
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+
+
+    {
+      "question": "5. Which among the statements is not true",
+      "answers": {
+        "a": "Relies on accurate character estimation.",
+        "b": "Can be sensitive to errors in distance calculations.",
+        "c": "Does not account for site-specific variations in evolution.",
+        "d": "Initially requires a star shaped tree assumption"
+      },
+      
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    }
+  ]
+}
