@@ -339,7 +339,6 @@
         }
 
 
-        
 
     
     </style>
@@ -379,17 +378,16 @@
     <div class="contents">
         <div class="file-container">
             <label for="fileInput" class="file-label">Choose File</label>
-            <input type="file" id="fileInput" style="display: none;">
+            <input type="file" id="fileInput" style="display: none">
             <span id="fileName">No file chosen</span>
             <input type="button" value="Reset" id="resetButton" class="file-label">
-            <a href="images\sequences.fasta" class="download-link" download>Download Sample FASTA</a>
+            <a href="sample.fasta" class="download-link" download>Download Sample FASTA</a>
         </div>
         
         
         
         <button class="step-btn" onclick="processFastaInput()">Process FASTA</button>
-        
-        
+
         <div id="matrixOutput"></div>
         <br>
         <br>
@@ -417,13 +415,11 @@
         <!-- Export Modal (Hidden Initially) -->
         <div id="exportModal" class="modal">
             <div class="modal-content">
-                <h3>Export Results</h3>
                 <button id="downloadTree" class="export-option">📂 Download Phylogenetic Tree</button>
-                <button id="downloadMatrix" class="export-option">📊 Download Matrix Table</button>
-                <button id="downloadAll" class="export-option">📁 Download All Results</button>
                 <button id="closeModal">❌ Close</button>
             </div>
         </div>
+
 
 
     
@@ -436,8 +432,6 @@
         let exportModal = document.getElementById("exportModal");
         let closeModal = document.getElementById("closeModal");
         let downloadTree = document.getElementById("downloadTree");
-        let downloadMatrix = document.getElementById("downloadMatrix");
-        let downloadAll = document.getElementById("downloadAll");
 
         // Show modal when clicking the export button
         exportButton.addEventListener("click", function () {
@@ -456,28 +450,33 @@
             }
         });
 
-        // Function to trigger file download dynamically
-        function downloadFile(filename, contentType) {
+        // Function to trigger tree download
+        function downloadTreeAsSVG() {
+            let treeSVG = document.querySelector("svg"); // Select the tree SVG
+            if (!treeSVG) {
+                alert("Error: Tree not generated yet! Please run the NJ algorithm first.");
+                return;
+            }
+
+            let serializer = new XMLSerializer();
+            let svgBlob = new Blob([serializer.serializeToString(treeSVG)], { type: "image/svg+xml" });
+            let url = URL.createObjectURL(svgBlob);
+
             let link = document.createElement("a");
-            link.href = `/static/downloads/${filename}`;
-            link.download = filename.split("/").pop(); // Extract filename from path
+            link.href = url;
+            link.download = "phylogenetic_tree.svg"; // Name of the saved file
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            
+            // Release the Blob URL
+            URL.revokeObjectURL(url);
         }
 
-        // Attach event listeners for downloading
-        document.getElementById("downloadTree").addEventListener("click", function () {
-            downloadFile("tree.svg", "image/svg+xml");
-        });
+        // Attach the function to the download button
+        document.getElementById("downloadTree").addEventListener("click", downloadTreeAsSVG);
 
-        document.getElementById("downloadMatrix").addEventListener("click", function () {
-            downloadFile("matrix.csv", "text/csv");
-        });
 
-        document.getElementById("downloadAll").addEventListener("click", function () {
-            downloadFile("results.zip", "application/zip");
-        });
 
 
         function toggleHowToUse() {
@@ -657,6 +656,10 @@
             });
             return output;
         }
+
+    
+        
+
         function processFastaInput() {
             const fastaInput = document.getElementById("sequence-input").value;
             if (!fastaInput.trim()) {
@@ -665,6 +668,7 @@
             }
             try {
                 const sequences = parseFasta(fastaInput);
+                const sequenceCount = Object.keys(sequences).length; // Count the number of sequences   
                 const distanceMatrix = computeDistanceMatrix(sequences);
                 displayMatrix(distanceMatrix);
                 // Automatically scroll down to the results
@@ -716,73 +720,97 @@
         });
 
         function neighborJoining(distanceMatrix) {
-            let nodes = Object.keys(distanceMatrix).map(name => ({ id: name, name }));
+            let nodes = Object.keys(distanceMatrix).map(name => ({ id: name, name:name.slice(0, 5) }));
+
+            function computeQMatrix(distMatrix, size) {
+                let Q = {};
+                for (let i in distMatrix) {
+                    Q[i] = {};
+                    for (let j in distMatrix[i]) {
+                        if (i !== j) {
+                            let sumI = Object.values(distMatrix[i]).reduce((a, b) => a + b, 0);
+                            let sumJ = Object.values(distMatrix[j]).reduce((a, b) => a + b, 0);
+                            Q[i][j] = (size - 2) * distMatrix[i][j] - sumI - sumJ;
+                        }
+                    }
+                }
+                return Q;
+            }
 
             while (nodes.length > 2) {
-                // Find the pair with the smallest distance
-                let minDist = Infinity, minI, minJ;
-                for (let i = 0; i < nodes.length; i++) {
-                    for (let j = i + 1; j < nodes.length; j++) {
-                        if (distanceMatrix[nodes[i].id][nodes[j].id] < minDist) {
-                            minDist = distanceMatrix[nodes[i].id][nodes[j].id];
+                let size = nodes.length;
+                let Q = computeQMatrix(distanceMatrix, size);
+                
+                let minQ = Infinity, minI, minJ;
+                for (let i in Q) {
+                    for (let j in Q[i]) {
+                        if (Q[i][j] < minQ) {
+                            minQ = Q[i][j];
                             minI = i;
                             minJ = j;
                         }
                     }
                 }
 
-                // Merge the two closest nodes into a new node
+                let sumI = Object.values(distanceMatrix[minI]).reduce((a, b) => a + b, 0);
+                let sumJ = Object.values(distanceMatrix[minJ]).reduce((a, b) => a + b, 0);
+                let branchLength1 = ((distanceMatrix[minI][minJ] + (sumI - sumJ) / (size - 2)) / 2).toFixed(0);
+                let branchLength2 = ((distanceMatrix[minI][minJ] + (sumJ - sumI) / (size - 2)) / 2).toFixed(0);
+                
+                let newNodeId = `Node_${minI}_${minJ}`;
                 const newNode = {
-                    id: `Node_${nodes[minI].id}_${nodes[minJ].id}`,
-                    name: "",
-                    children: [nodes[minI], nodes[minJ]]
+                    id: newNodeId,
+                    name: newNodeId,
+                    children: [
+                        { ...nodes.find(n => n.id === minI), branchLength: branchLength1 },
+                        { ...nodes.find(n => n.id === minJ), branchLength: branchLength2 }
+                    ]
                 };
-
-                // Update the distance matrix for the new node
+                
                 let newDistances = {};
                 nodes.forEach(n => {
-                    if (n !== nodes[minI] && n !== nodes[minJ]) {
-                        newDistances[n.id] = (distanceMatrix[nodes[minI].id][n.id] +
-                            distanceMatrix[nodes[minJ].id][n.id]) / 2;
+                    if (n.id !== minI && n.id !== minJ) {
+                        newDistances[n.id] = ((distanceMatrix[minI][n.id] + distanceMatrix[minJ][n.id] - distanceMatrix[minI][minJ]) / 2).toFixed(0);
                     }
                 });
 
-                // Remove merged nodes and add new node
-                nodes = nodes.filter((_, index) => index !== minI && index !== minJ);
+                nodes = nodes.filter(n => n.id !== minI && n.id !== minJ);
                 nodes.push(newNode);
 
-                // Update distance matrix
-                distanceMatrix[newNode.id] = newDistances;
+                distanceMatrix[newNodeId] = newDistances;
                 nodes.forEach(n => {
-                    if (n.id !== newNode.id) {
-                        distanceMatrix[n.id][newNode.id] = newDistances[n.id];
+                    if (n.id !== newNodeId) {
+                        distanceMatrix[n.id][newNodeId] = newDistances[n.id];
                     }
                 });
             }
-
-            // Final root node with two remaining nodes
-            return { name: "", children: nodes };
+            return { name: "Root", children: nodes };
         }
-
 
         function drawUnrootedTree(treeData) {
             d3.select("#tree").selectAll("*").remove();
-            const width = 600, height = 600;
+            const width = 1200, height = 800;
 
             const svg = d3.select("#tree")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+                .attr("transform", `translate(${width / 2}, ${height / 2 - 50})`);
 
-            // Convert NJ tree data to a force-directed graph
-            const nodes = [];
-            const links = [];
+            const zoom = d3.zoom()
+                .scaleExtent([0.5, 3])
+                .on("zoom", (event) => {
+                    svg.attr("transform", event.transform);
+                });
+
+            d3.select("svg").call(zoom);
+
+            const nodes = [], links = [];
 
             function traverse(node, parent = null) {
                 nodes.push(node);
                 if (parent) {
-                    links.push({ source: parent, target: node });
+                    links.push({ source: parent, target: node, length: node.branchLength || 50 });
                 }
                 if (node.children) {
                     node.children.forEach(child => traverse(child, node));
@@ -790,51 +818,23 @@
             }
             traverse(treeData);
 
-            // Force simulation for a natural unrooted tree layout
             const simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).distance(80).strength(1).id(d => d.id))
-                .force("charge", d3.forceManyBody().strength(-200))
-                .force("center", d3.forceCenter(0, 0))
+                .force("link", d3.forceLink(links).distance(d => d.length).strength(1).id(d => d.id))
+                .force("charge", d3.forceManyBody().strength(-500))
+                .force("center", d3.forceCenter(0, -50))
                 .on("tick", ticked);
 
-            // Draw edges (links)
             const link = svg.selectAll(".link")
                 .data(links)
                 .enter().append("line")
                 .attr("stroke", "#000");
 
-            // Draw nodes (circles)
             const node = svg.selectAll(".node")
                 .data(nodes)
                 .enter().append("circle")
-                .attr("r", 6)
+                .attr("r", 8)
                 .attr("fill", "#243b55")
-                .call(drag(simulation));
-
-            // Add labels
-            const text = svg.selectAll(".label")
-                .data(nodes)
-                .enter().append("text")
-                .attr("font-size", "14px")
-                .attr("dx", 8)
-                .attr("dy", 4)
-                .text(d => d.name);
-
-            function ticked() {
-                link.attr("x1", d => d.source.x)
-                    .attr("y1", d => d.source.y)
-                    .attr("x2", d => d.target.x)
-                    .attr("y2", d => d.target.y);
-
-                node.attr("cx", d => d.x)
-                    .attr("cy", d => d.y);
-
-                text.attr("x", d => d.x + 8)
-                    .attr("y", d => d.y);
-            }
-
-            function drag(simulation) {
-                return d3.drag()
+                .call(d3.drag()
                     .on("start", (event, d) => {
                         if (!event.active) simulation.alphaTarget(0.3).restart();
                         d.fx = d.x;
@@ -848,9 +848,46 @@
                         if (!event.active) simulation.alphaTarget(0);
                         d.fx = null;
                         d.fy = null;
-                    });
+                    })
+                );
+
+            const text = svg.selectAll(".label")
+                .data(nodes)
+                .enter().append("text")
+                .attr("font-size", "14px")
+                .attr("dx", 10)
+                .attr("dy", 5)
+                .text(d => d.name);
+            
+            const branchText = svg.selectAll(".branch-label")
+                .data(links)
+                .enter().append("text")
+                .attr("font-size", "12px")
+                .attr("fill", "black")
+                .attr("text-anchor", "middle")
+                .text(d => d.length);
+
+            function ticked() {
+                link.attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node.attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                text.attr("x", d => d.x + 10)
+                    .attr("y", d => d.y);
+                
+                branchText.attr("x", d => (d.source.x + d.target.x) / 2)
+                        .attr("y", d => (d.source.y + d.target.y) / 2);
             }
         }
+
+
+
+
+
         
     </script>
 </body>
