@@ -72,6 +72,7 @@ http://web.cs.elte.hu/blobs/diplomamunkak/bsc_alkmat/2015/biro_regina_krisztina.
 &nbsp;
 
 <img src="images/3a.png" title="" />
+
 &nbsp;
 
 
