@@ -71,7 +71,10 @@ http://web.cs.elte.hu/blobs/diplomamunkak/bsc_alkmat/2015/biro_regina_krisztina.
 
 &nbsp;
 
-<img src="images/3.png" title="" />
+<img src="images/3a.png" title="" />
+
+
+<img src="images/3b.png" title="" />
 
 &nbsp;
 
@@ -93,6 +96,10 @@ Figure 2: Example being calculated iteratively. Each color represents a step tow
 
 &nbsp;
 
+
+&nbsp;
+
+
 ### Advantages and Limitations
 #### Advantages:
 1. Fast and efficient for large datasets.
@@ -100,6 +107,9 @@ Figure 2: Example being calculated iteratively. Each color represents a step tow
 2. Does not require an initial tree assumption.
 
 3. Works well with large evolutionary distances.
+
+&nbsp;
+
 
 #### Limitations:
 1. Relies on accurate distance estimation.
